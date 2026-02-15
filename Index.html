@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lucky Draw Ticket Checker</title>
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        background: #0f172a;
+        color: white;
+        text-align: center;
+        padding: 40px;
+    }
+
+    h1 {
+        margin-bottom: 30px;
+    }
+
+    input {
+        padding: 12px;
+        font-size: 18px;
+        width: 200px;
+        border-radius: 8px;
+        border: none;
+        text-align: center;
+    }
+
+    button {
+        padding: 12px 20px;
+        font-size: 16px;
+        margin-left: 10px;
+        border-radius: 8px;
+        border: none;
+        cursor: pointer;
+        background: #22c55e;
+        color: white;
+    }
+
+    button:hover {
+        background: #16a34a;
+    }
+
+    #result {
+        margin-top: 30px;
+        font-size: 22px;
+        font-weight: bold;
+    }
+
+    .found {
+        color: #22c55e;
+    }
+
+    .not-found {
+        color: #ef4444;
+    }
+</style>
+</head>
+<body>
+
+<h1>🎟 Lucky Draw Ticket Checker</h1>
+
+<input type="number" id="ticketNumber" placeholder="Enter Ticket No">
+<button onclick="checkTicket()">Check</button>
+
+<div id="result"></div>
+
+<script>
+    function isInRange(num, start, end) {
+        return num >= start && num <= end;
+    }
+
+    function checkTicket() {
+        const number = parseInt(document.getElementById("ticketNumber").value);
+        const result = document.getElementById("result");
+
+        if (isNaN(number)) {
+            result.innerHTML = "Enter a valid number.";
+            result.className = "not-found";
+            return;
+        }
+
+        const valid =
+            isInRange(number, 6401, 6414) ||
+            isInRange(number, 6416, 6432) ||
+            isInRange(number, 6442, 6460);
+
+        if (valid) {
+            result.innerHTML = "✅ Ticket EXISTS in your list.";
+            result.className = "found";
+        } else {
+            result.innerHTML = "❌ Ticket NOT in your list.";
+            result.className = "not-found";
+        }
+    }
+</script>
+
+</body>
+</html>
