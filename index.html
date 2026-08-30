@@ -11,12 +11,12 @@
     margin:0;
     padding:0;
     box-sizing:border-box;
-    font-family: "Segoe UI", Arial, sans-serif;
+    font-family:"Segoe UI", Arial, sans-serif;
 }
 
 body{
     height:100vh;
-    background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+    background:linear-gradient(135deg,#0f2027,#203a43,#2c5364);
     display:flex;
     justify-content:center;
     align-items:center;
@@ -24,15 +24,15 @@ body{
 }
 
 .container{
-    background: rgba(255,255,255,0.05);
-    backdrop-filter: blur(12px);
+    background:rgba(255,255,255,0.05);
+    backdrop-filter:blur(12px);
     padding:40px;
     border-radius:20px;
     width:90%;
     max-width:420px;
     text-align:center;
     box-shadow:0 20px 40px rgba(0,0,0,0.5);
-    animation: fadeIn 1s ease-in-out;
+    animation:fadeIn 1s ease-in-out;
 }
 
 h1{
@@ -46,15 +46,41 @@ h1{
     margin-bottom:25px;
 }
 
-input{
+.ticket-input-wrapper{
+    display:flex;
+    gap:10px;
     width:100%;
+    margin-bottom:15px;
+}
+
+select{
+    width:90px;
+    padding:14px 10px;
+    border:none;
+    border-radius:10px;
+    font-size:18px;
+    font-weight:bold;
+    text-align:center;
+    background:white;
+    color:#1f2937;
+    cursor:pointer;
+    outline:none;
+}
+
+input{
+    flex:1;
+    min-width:0;
     padding:14px;
     border:none;
     border-radius:10px;
     font-size:18px;
     text-align:center;
-    margin-bottom:15px;
     outline:none;
+}
+
+input:focus,
+select:focus{
+    box-shadow:0 0 0 3px rgba(34,197,94,0.35);
 }
 
 button{
@@ -71,34 +97,59 @@ button{
 }
 
 button:hover{
-    transform:scale(1.05);
+    transform:scale(1.03);
+}
+
+button:active{
+    transform:scale(0.98);
 }
 
 #result{
     margin-top:25px;
-    font-size:20px;
+    font-size:18px;
     font-weight:bold;
     min-height:40px;
+    line-height:1.4;
 }
 
 .valid{
     color:#4ade80;
-    animation: pop 0.4s ease;
+    animation:pop 0.4s ease;
 }
 
 .invalid{
     color:#f87171;
-    animation: pop 0.4s ease;
+    animation:pop 0.4s ease;
+}
+
+.hint{
+    margin-top:15px;
+    font-size:12px;
+    opacity:0.65;
 }
 
 @keyframes pop{
-    0%{transform:scale(0.8);opacity:0;}
-    100%{transform:scale(1);opacity:1;}
+    0%{
+        transform:scale(0.8);
+        opacity:0;
+    }
+
+    100%{
+        transform:scale(1);
+        opacity:1;
+    }
 }
 
 @keyframes fadeIn{
-    from{opacity:0; transform:translateY(20px);}
-    to{opacity:1; transform:translateY(0);}
+    from{
+        opacity:0;
+        transform:translateY(20px);
+    }
+
+    to{
+        opacity:1;
+        transform:translateY(0);
+    }
 }
 </style>
 </head>
@@ -106,45 +157,89 @@ button:hover{
 <body>
 
 <div class="container">
+
     <h1>🎟 Lucky Draw Ticket Verification</h1>
+
     <div class="subtitle">
         Enter your ticket number below to verify instantly
     </div>
 
-    <input
-        type="text"
-        id="ticket"
-        placeholder="Enter Ticket Number"
-        autocomplete="off"
-        onkeypress="handleKey(event)"
-    >
+    <div class="ticket-input-wrapper">
 
-    <button onclick="checkTicket()">Verify Ticket</button>
+        <!-- Only B or E can be selected -->
+        <select id="ticketPrefix">
+            <option value="E">E</option>
+            <option value="B">B</option>
+        </select>
+
+        <!-- Only numbers can be entered -->
+        <input
+            type="number"
+            id="ticketNumber"
+            placeholder="Ticket Number"
+            inputmode="numeric"
+            min="1"
+            onkeypress="handleKey(event)"
+        >
+
+    </div>
+
+    <button onclick="checkTicket()">
+        Verify Ticket
+    </button>
 
     <div id="result"></div>
+
+    <div class="hint">
+        Select the ticket series and enter the ticket number.
+    </div>
+
 </div>
 
 <script>
 
 function handleKey(e){
+
     if(e.key === "Enter"){
         checkTicket();
     }
+
 }
 
 function checkTicket(){
 
-    const input = document.getElementById("ticket");
-    const result = document.getElementById("result");
+    const prefix =
+        document.getElementById("ticketPrefix").value;
 
-    // Convert input to uppercase and remove extra spaces
-    const ticketNumber = input.value.trim().toUpperCase();
+    const numberInput =
+        document.getElementById("ticketNumber");
 
-    if(ticketNumber === ""){
-        result.innerHTML = "⚠ Please enter a valid ticket number.";
+    const result =
+        document.getElementById("result");
+
+    const number =
+        numberInput.value.trim();
+
+    /*
+     * Validate number input
+     */
+    if(number === ""){
+
+        result.innerHTML =
+            "⚠ Please enter a ticket number.";
+
         result.className = "invalid";
+
         return;
     }
+
+    /*
+     * Convert complete ticket into format:
+     * E541
+     * B481
+     */
+    const ticketNumber =
+        prefix + number;
 
     /*
      * REGISTERED TICKETS
@@ -156,6 +251,7 @@ function checkTicket(){
      */
 
     const validTickets = new Set([
+
         // E541 - E550
         "E541",
         "E542",
@@ -195,10 +291,14 @@ function checkTicket(){
         "E929"
     ]);
 
+    /*
+     * Check ticket
+     */
     if(validTickets.has(ticketNumber)){
 
         result.innerHTML =
-            "🎉 Congratulations! This ticket is successfully registered in the Lucky Draw.";
+            "🎉 Congratulations!<br>" +
+            "This ticket is successfully registered in the Lucky Draw.";
 
         result.className = "valid";
 
@@ -209,6 +309,7 @@ function checkTicket(){
 
         result.className = "invalid";
     }
+
 }
 
 </script>
