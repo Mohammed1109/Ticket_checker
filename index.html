@@ -1,3 +1,4 @@
+```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -53,6 +54,7 @@ input{
     font-size:18px;
     text-align:center;
     margin-bottom:15px;
+    outline:none;
 }
 
 button{
@@ -105,15 +107,25 @@ button:hover{
 
 <div class="container">
     <h1>🎟 Lucky Draw Ticket Verification</h1>
-    <div class="subtitle">Enter your ticket number below to verify instantly</div>
+    <div class="subtitle">
+        Enter your ticket number below to verify instantly
+    </div>
 
-    <input type="number" id="ticket" placeholder="Enter Ticket Number" onkeypress="handleKey(event)">
+    <input
+        type="text"
+        id="ticket"
+        placeholder="Enter Ticket Number"
+        autocomplete="off"
+        onkeypress="handleKey(event)"
+    >
+
     <button onclick="checkTicket()">Verify Ticket</button>
 
     <div id="result"></div>
 </div>
 
 <script>
+
 function handleKey(e){
     if(e.key === "Enter"){
         checkTicket();
@@ -121,30 +133,86 @@ function handleKey(e){
 }
 
 function checkTicket(){
-    const num = parseInt(document.getElementById("ticket").value);
+
+    const input = document.getElementById("ticket");
     const result = document.getElementById("result");
 
-    if(isNaN(num)){
+    // Convert input to uppercase and remove extra spaces
+    const ticketNumber = input.value.trim().toUpperCase();
+
+    if(ticketNumber === ""){
         result.innerHTML = "⚠ Please enter a valid ticket number.";
         result.className = "invalid";
         return;
     }
 
-    const valid =
-        (num >= 6401 && num <= 6414) ||
-        (num >= 6416 && num <= 6432) ||
-        (num >= 6442 && num <= 6460);
+    /*
+     * REGISTERED TICKETS
+     *
+     * E541 - E550
+     * B481 - B490
+     * E592 - E600
+     * E929
+     */
 
-    if(valid){
-        result.innerHTML = "🎉 Congratulations! This ticket is successfully registered in the Lucky Draw.";
+    const validTickets = new Set([
+        // E541 - E550
+        "E541",
+        "E542",
+        "E543",
+        "E544",
+        "E545",
+        "E546",
+        "E547",
+        "E548",
+        "E549",
+        "E550",
+
+        // B481 - B490
+        "B481",
+        "B482",
+        "B483",
+        "B484",
+        "B485",
+        "B486",
+        "B487",
+        "B488",
+        "B489",
+        "B490",
+
+        // E592 - E600
+        "E592",
+        "E593",
+        "E594",
+        "E595",
+        "E596",
+        "E597",
+        "E598",
+        "E599",
+        "E600",
+
+        // E929
+        "E929"
+    ]);
+
+    if(validTickets.has(ticketNumber)){
+
+        result.innerHTML =
+            "🎉 Congratulations! This ticket is successfully registered in the Lucky Draw.";
+
         result.className = "valid";
+
     }else{
-        result.innerHTML = "❌ This ticket number is not found in the registered list.";
+
+        result.innerHTML =
+            "❌ This ticket number is not found in the registered list.";
+
         result.className = "invalid";
     }
 }
+
 </script>
 
 </body>
 </html>
-
+```
